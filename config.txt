@@ -1,0 +1,6 @@
+[DATABASE]
+servername = tradingseas.com
+username = automaton
+password = autopass
+database = automaton
+table_prefix = dev_

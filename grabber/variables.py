@@ -22,25 +22,25 @@ class Variables:
                 'name': "day_of_week",
                 'description': "the day of the week, a number 0-6",
                 'type': "calendar",
-                'getter': get_day_of_week
+                'fetcher': get_day_of_week
             },
             {
                 'name': "day",
                 'description': "the day part of the date",
                 'type': "calendar",
-                'getter': get_day
+                'fetcher': get_day
             },
             {
                 'name': "month",
                 'description': "the month part of the date",
                 'type': "calendar",
-                'getter': get_month
+                'fetcher': get_month
             },
             {
                 'name': "year",
                 'description': "the year part of the date",
                 'type': "calendar",
-                'getter': get_year
+                'fetcher': get_year
             }
         ]
 
