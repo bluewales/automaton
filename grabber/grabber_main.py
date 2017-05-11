@@ -18,6 +18,7 @@ def main():
 
     start_date = date(2017, 1, 1)
     end_date = datetime.date.today()
+
     for single_date in daterange(start_date, end_date):
         for variable in variables:
             day = single_date
@@ -28,6 +29,7 @@ def main():
             value = variable['fetcher'](day)
 
             if value is None:
+                print("Could not fetch " + variable['name'] + " for " + str(day))
                 continue
 
             db.save_value(variable, value, day)

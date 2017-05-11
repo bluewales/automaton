@@ -34,20 +34,30 @@ class Database:
         # if not, create it
         if variable_table not in tables:
             cursor = self.cnx.cursor()
-            cursor.execute("create table " + variable_table + "(id int unsigned auto_increment primary key, name varchar(16), description varchar(128), type varchar(32))")
+            query = "create table {0} " \
+                    "(id int unsigned auto_increment primary key, " \
+                    "name varchar(16), " \
+                    "description varchar(128), " \
+                    "type varchar(32))".format(variable_table, )
+            cursor.execute(query)
 
         # check that variable is in table
         cursor = self.cnx.cursor()
-        cursor.execute("select id from " + variable_table + " where name='" + variable['name'] + "'")
+        query = "select id from {0} where name='{1}'".format(variable_table, variable['name'])
+        cursor.execute(query)
 
         # if not insert it
         if cursor.rowcount < 1:
             cursor = self.cnx.cursor()
-            query = "insert into " + variable_table + " (name, description, type) values ('" + variable['name'] + "','" + variable['description'] + "','" + variable['type'] + "')"
+            query = "insert into {0} " \
+                    "(name, description, type) " \
+                    "values ('{1}','{2}','{3}')".format(variable_table, variable['name'], variable['description'],
+                                                        variable['type'])
             cursor.execute(query)
 
             cursor = self.cnx.cursor()
-            cursor.execute("select id from " + variable_table + " where name='" + variable['name'] + "'")
+            query = "select id from {0} where name='{1}'".format(variable_table, variable['name'])
+            cursor.execute(query)
 
         # get variable id
         variable_id = [i[0] for i in cursor][0]
@@ -56,11 +66,16 @@ class Database:
         # if not create it
         if values_table not in tables:
             cursor = self.cnx.cursor()
-            cursor.execute("create table " + values_table + "(variable_id int, day date, value double,  primary key (variable_id, day))")
+            query = "create table {0} " \
+                    "(variable_id int, day date, value double,  primary key (variable_id, day))".format(values_table)
+            cursor.execute(query)
 
         # insert value, variable id, date into values table
         cursor = self.cnx.cursor()
-        query = "insert into " + values_table + " (variable_id, day, value) values (" + str(variable_id) + ", '" + str(day) + "', " + str(value) + ") ON DUPLICATE KEY UPDATE value=" + str(value)
+        query = "insert into {0} " \
+                "(variable_id, day, value) " \
+                "values ({1}, '{2}', {3}) " \
+                "ON DUPLICATE KEY UPDATE value={3}".format(values_table, str(variable_id), str(day), str(value))
         cursor.execute(query)
 
     def value_exists(self, variable, day):
@@ -78,7 +93,10 @@ class Database:
             return False
 
         cursor = self.cnx.cursor()
-        query = "select value from " + values_table + " inner join " + variable_table + " on dev_values.variable_id = dev_variables.id where day = '" + str(day) +"' and name = '" + variable['name'] + "'"
+        query = "select value from " \
+                "{0} inner join {1} on dev_values.variable_id = dev_variables.id " \
+                "where day = '{2}' and name = '{3}'".format(values_table, variable_table, str(day), variable['name'])
+
         cursor.execute(query)
         return cursor.rowcount > 0
 
