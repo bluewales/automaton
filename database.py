@@ -4,6 +4,8 @@ import json
 import datetime
 import MySQLdb
 
+from grabber.variables import Variables
+
 
 class Database:
 
@@ -100,15 +102,46 @@ class Database:
         cursor.execute(query)
         return cursor.rowcount > 0
 
+    def load_values(self):
+        variable_table = self.config['DATABASE']['table_prefix'] + "variables"
+        values_table = self.config['DATABASE']['table_prefix'] + "values"
+
+        # check that the tables exist
+        cursor = self.cnx.cursor()
+        cursor.execute("select day,name,value from dev_values inner join dev_variables on id=variable_id")
+
+        data = {'min_date':datetime.date.today(), 'max_date':datetime.date(1970, 1, 1), 'values':{}, 'sums':{}, 'names':[]}
+        for row in cursor:
+            if row[0] not in data['values']:
+                data['values'][row[0]] = {}
+            data['values'][row[0]][row[1]] = row[2]
+
+            if row[1] not in data['sums']:
+                data['sums'][row[1]] = 0
+            data['sums'][row[1]] += row[2]
+
+            if row[1] not in data['names']:
+                data['names'].append(row[1])
+
+            if row[0] < data['min_date']:
+                data['min_date'] = row[0]
+            if row[0] > data['max_date']:
+                data['max_date'] = row[0]
+
+        data['avg'] = {}
+        for name in data['names']:
+            data['avg'][name] = data['sums'][name] / len(data['values'])
+
+        print(data)
+        return data
+
 
 def main():
     db = Database()
-    v = {
-        'name': "month",
-        'description': "the month part of the date",
-        'type': "calendar"
-    }
-    db.save_value(v, 12, datetime.date.today())
+    v = Variables().get_variable_list()[0]
+    day = datetime.date.today()
+    #db.save_value(v, v['fetcher'](day), day)
+    db.load_values()
 
 if __name__ == "__main__":
     main()
