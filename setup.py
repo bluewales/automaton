@@ -32,3 +32,5 @@ if __name__ == '__main__':
     call(pip + ' install pandas', shell=True)
 
     call(pip + ' install neat-python')
+
+    call(pip + ' install --upgrade tensorflow')
