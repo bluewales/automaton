@@ -13,15 +13,12 @@ def daterange(start_date, end_date):
 def main():
 
     v = Variables()
-    #db = Database()
+    db = Database()
     variables = v.get_variable_list()
 
     start_date = date(2017, 1, 1)
     end_date = datetime.date.today()
 
-    print(daterange(start_date, end_date))
-
-"""
     for single_date in daterange(start_date, end_date):
         for variable in variables:
             day = single_date
@@ -38,7 +35,7 @@ def main():
             db.save_value(variable, value, day)
 
             print(variable['name'] + " " + str(day) + " " + str(value))
-"""
+
 
 if __name__ == "__main__":
     main()

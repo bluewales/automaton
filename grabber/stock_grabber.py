@@ -20,8 +20,6 @@ class StockGrabber:
 
         day_string = day.strftime("%d-%b-%y")
 
-        print(day_string)
-
         if day > datetime.date.today():
             return None
 
@@ -65,7 +63,7 @@ class StockGrabber:
                     self.cached_data[ticker][single_day_string] = "Closed"
 
         if self.cached_data[ticker][day_string] == "Closed":
-            return None
+            return 0
         return self.cached_data[ticker][day_string][field]
 
 
