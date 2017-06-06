@@ -18,7 +18,7 @@ class StockGrabber:
 
     def fetch_stock_data(self, ticker, day, field):
 
-        day_string = day.strftime("%d-%b-%y")
+        day_string = day.strftime("%d-%b-%y").lstrip("0")
 
         if day > datetime.date.today():
             return None
@@ -58,7 +58,7 @@ class StockGrabber:
                     self.cached_data[ticker][d[0]][header[i]] = d[i]
 
             for single_date in daterange(start_day, end_day):
-                single_day_string = single_date.strftime("%d-%b-%y")
+                single_day_string = single_date.strftime("%d-%b-%y").lstrip("0")
                 if single_day_string not in self.cached_data[ticker]:
                     self.cached_data[ticker][single_day_string] = "Closed"
 

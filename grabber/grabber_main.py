@@ -14,14 +14,12 @@ def main():
 
     v = Variables()
     db = Database()
-    variables = v.get_variable_list()
 
     start_date = date(2017, 1, 1)
     end_date = datetime.date.today()
 
-    for single_date in daterange(start_date, end_date):
-        for variable in variables:
-            day = single_date
+    for variable in v.get_variable_list():
+        for day in daterange(start_date, end_date):
 
             if db.value_exists(variable, day):
                 continue

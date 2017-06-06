@@ -40,26 +40,24 @@ class Database:
                     "(id int unsigned auto_increment primary key, " \
                     "name varchar(16), " \
                     "description varchar(128), " \
-                    "type varchar(32))".format(variable_table, )
+                    "type varchar(32))".format(variable_table)
             cursor.execute(query)
 
         # check that variable is in table
         cursor = self.cnx.cursor()
-        query = "select id from {0} where name='{1}'".format(variable_table, variable['name'])
-        cursor.execute(query)
+        query = "select id from {0} where name=%s".format(variable_table)
+
+        cursor.execute(query, (variable['name'],))
 
         # if not insert it
         if cursor.rowcount < 1:
             cursor = self.cnx.cursor()
-            query = "insert into {0} " \
-                    "(name, description, type) " \
-                    "values ('{1}','{2}','{3}')".format(variable_table, variable['name'], variable['description'],
-                                                        variable['type'])
-            cursor.execute(query)
+            query = "insert into {0} (name, description, type) values (%s, %s, %s)".format(variable_table)
+            cursor.execute(query, (variable['name'], variable['description'], variable['type']))
 
             cursor = self.cnx.cursor()
-            query = "select id from {0} where name='{1}'".format(variable_table, variable['name'])
-            cursor.execute(query)
+            query = "select id from {0} where name=%s".format(variable_table)
+            cursor.execute(query, (variable['name'],))
 
         # get variable id
         variable_id = [i[0] for i in cursor][0]
@@ -76,14 +74,15 @@ class Database:
         cursor = self.cnx.cursor()
         query = "insert into {0} " \
                 "(variable_id, day, value) " \
-                "values ({1}, '{2}', {3}) " \
-                "ON DUPLICATE KEY UPDATE value={3}".format(values_table, str(variable_id), str(day), str(value))
-        cursor.execute(query)
+                "values (%s, %s, %s) " \
+                "ON DUPLICATE KEY UPDATE value=%s".format(values_table)
+        cursor.execute(query, (str(variable_id), str(day), str(value), str(value)))
 
     def value_exists(self, variable, day):
 
         variable_table = self.config['DATABASE']['table_prefix'] + "variables"
         values_table = self.config['DATABASE']['table_prefix'] + "values"
+
 
         # check that the tables exist
         cursor = self.cnx.cursor()
@@ -97,9 +96,9 @@ class Database:
         cursor = self.cnx.cursor()
         query = "select value from " \
                 "{0} inner join {1} on dev_values.variable_id = dev_variables.id " \
-                "where day = '{2}' and name = '{3}'".format(values_table, variable_table, str(day), variable['name'])
+                "where day = %s and name = %s".format(values_table, variable_table)
 
-        cursor.execute(query)
+        cursor.execute(query, (str(day), variable['name']))
         return cursor.rowcount > 0
 
     def load_values(self):
