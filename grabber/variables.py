@@ -132,30 +132,35 @@ class Variables:
                 'name': "day_of_week",
                 'description': "day of the week, a number 1-7",
                 'type': "calendar",
+                'tag': "Day of Week",
                 'fetcher': lambda day: day.weekday()+1
             },
             {
                 'name': "day",
                 'description': "day part of the date",
                 'type': "calendar",
+                'tag': "Day",
                 'fetcher': lambda day: day.day
             },
             {
                 'name': "month",
                 'description': "month part of the date",
                 'type': "calendar",
+                'tag': "Month",
                 'fetcher': lambda day: day.month
             },
             {
                 'name': "year",
                 'description': "year part of the date",
                 'type': "calendar",
+                'tag': "Year",
                 'fetcher': lambda day: day.year
             },
             {
                 'name': "week_of_year",
                 'description': "week number of the year",
                 'type': "calendar",
+                'tag': "Week of Year",
                 'fetcher': lambda day: day.isocalendar()[1]
             }
         ]
@@ -165,6 +170,7 @@ class Variables:
             'name':stock['ticker']+" "+detail['name'],
             'description':detail['description']+" of "+stock['name']+" stock",
             'type': "stock",
+            'tag': stock['ticker'],
             'fetcher': lambda day: self.sg.fetch_stock_data(stock['ticker'], day, detail['name'])
         }
 

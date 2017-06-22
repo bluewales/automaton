@@ -40,7 +40,8 @@ class Database:
                     "(id int unsigned auto_increment primary key, " \
                     "name varchar(16), " \
                     "description varchar(128), " \
-                    "type varchar(32))".format(variable_table)
+                    "type varchar(32), " \
+                    "tag varchar(32))".format(variable_table)
             cursor.execute(query)
 
         # check that variable is in table
@@ -52,8 +53,8 @@ class Database:
         # if not insert it
         if cursor.rowcount < 1:
             cursor = self.cnx.cursor()
-            query = "insert into {0} (name, description, type) values (%s, %s, %s)".format(variable_table)
-            cursor.execute(query, (variable['name'], variable['description'], variable['type']))
+            query = "insert into {0} (name, description, type, tag) values (%s, %s, %s, %s)".format(variable_table)
+            cursor.execute(query, (variable['name'], variable['description'], variable['type'], variable['tag']))
 
             cursor = self.cnx.cursor()
             query = "select id from {0} where name=%s".format(variable_table)
