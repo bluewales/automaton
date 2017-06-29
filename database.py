@@ -3,6 +3,8 @@ import os
 import json
 import datetime
 import MySQLdb
+import pandas as pd
+import numpy as np
 
 from grabber.variables import Variables
 
@@ -41,7 +43,8 @@ class Database:
                     "name varchar(16), " \
                     "description varchar(128), " \
                     "type varchar(32), " \
-                    "tag varchar(32))".format(variable_table)
+                    "tag varchar(32), " \
+                    "detail varchar(32))".format(variable_table)
             cursor.execute(query)
 
         # check that variable is in table
@@ -53,8 +56,9 @@ class Database:
         # if not insert it
         if cursor.rowcount < 1:
             cursor = self.cnx.cursor()
-            query = "insert into {0} (name, description, type, tag) values (%s, %s, %s, %s)".format(variable_table)
-            cursor.execute(query, (variable['name'], variable['description'], variable['type'], variable['tag']))
+            query = "insert into {0} (name, description, type, tag, detail) values (%s, %s, %s, %s, %s)".format(variable_table)
+            cursor.execute(query, (variable['name'], variable['description'],
+                                   variable['type'], variable['tag'], variable['detail']))
 
             cursor = self.cnx.cursor()
             query = "select id from {0} where name=%s".format(variable_table)
@@ -134,6 +138,18 @@ class Database:
 
         print(data)
         return data
+
+    def query_to_df(self, q):
+
+        cursor = self.cnx.cursor()
+        cursor.execute(q)
+
+        rows = []
+
+        for row in cursor.fetchall():
+            rows.append(row)
+
+        return pd.DataFrame(rows)
 
 
 def main():

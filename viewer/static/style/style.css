@@ -1,0 +1,35 @@
+body {
+    margin:0;
+    font-family: "Arial", Sans-serif;
+}
+header {
+    widht:100%;
+    background-color: #123456;
+    color: #fedcba;
+}
+h1 {
+    margin:0 auto;
+    padding:10px 100px;
+    font-size: 300%;
+}
+#main_div {
+    padding:8px;
+}
+ul {
+    list-style-type: none;
+}
+/* unvisited link */
+a {
+    color: black;
+    text-decoration: none;
+}
+
+/* mouse over link */
+a:hover {
+    color: hotpink;
+}
+
+/* selected link */
+a:active {
+    color: blue;
+}

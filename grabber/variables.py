@@ -133,6 +133,7 @@ class Variables:
                 'description': "day of the week, a number 1-7",
                 'type': "calendar",
                 'tag': "Day of Week",
+                'detail': None,
                 'fetcher': lambda day: day.weekday()+1
             },
             {
@@ -140,6 +141,7 @@ class Variables:
                 'description': "day part of the date",
                 'type': "calendar",
                 'tag': "Day",
+                'detail': None,
                 'fetcher': lambda day: day.day
             },
             {
@@ -147,6 +149,7 @@ class Variables:
                 'description': "month part of the date",
                 'type': "calendar",
                 'tag': "Month",
+                'detail': None,
                 'fetcher': lambda day: day.month
             },
             {
@@ -154,6 +157,7 @@ class Variables:
                 'description': "year part of the date",
                 'type': "calendar",
                 'tag': "Year",
+                'detail': None,
                 'fetcher': lambda day: day.year
             },
             {
@@ -161,16 +165,19 @@ class Variables:
                 'description': "week number of the year",
                 'type': "calendar",
                 'tag': "Week of Year",
+                'detail': None,
                 'fetcher': lambda day: day.isocalendar()[1]
             }
         ]
 
     def stock_variable_from_detail(self, stock, detail):
         return {
-            'name':stock['ticker']+" "+detail['name'],
+            'tag': stock['ticker'],
+            'detail': detail['name'],
+            'name': stock['ticker'] + " " + detail['name'],
             'description':detail['description']+" of "+stock['name']+" stock",
             'type': "stock",
-            'tag': stock['ticker'],
+
             'fetcher': lambda day: self.sg.fetch_stock_data(stock['ticker'], day, detail['name'])
         }
 

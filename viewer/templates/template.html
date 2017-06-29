@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head>
+  <title>Automaton</title>
+  <link href="/static/style/base.css" rel="stylesheet">
+  <link href="/static/style/style.css" rel="stylesheet">
+</head>
+<body>
+<script src={{url_for('static', filename='js/d3.min.js')}}></script>
+<header>
+  <h1>Automaton</h1>
+</header>
+<div id='main_div'>
+  {% block content %}{% endblock %}
+</div>
+</body>
+</html>

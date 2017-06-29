@@ -34,3 +34,5 @@ if __name__ == '__main__':
     call(pip + ' install neat-python')
 
     call(pip + ' install --upgrade tensorflow')
+
+    call(pip + ' install flask')

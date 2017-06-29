@@ -1,0 +1,15 @@
+{% extends "template.html" %}
+{% block content %}
+  
+    {% for type in types %}
+      <h2>{{type}}</h2>
+      <ul>
+      {% for var in vars %}
+        {% if var[1] == type %}
+          <li><a href='{{url_for("stock_page",tag=var[0])}}' >{{var[0]}}</a></li>
+        {% endif %}
+      {% endfor %}
+      </ul>
+    {% endfor %}
+  
+{% endblock %}
