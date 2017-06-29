@@ -15,7 +15,7 @@ def main():
     v = Variables()
     db = Database()
 
-    start_date = date(2017, 6, 1)
+    start_date = date(2016, 6, 1)
     end_date = datetime.date.today()
 
     for variable in v.get_variable_list():

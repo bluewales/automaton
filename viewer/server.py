@@ -17,7 +17,6 @@ app = Flask(__name__)
 
 
 @app.route('/')
-@app.route('/<name>')
 def hello_world(name=None):
     db = MySQLdb.connect(host="tradingseas.com", user="automaton", passwd="autopass", db="automaton")
 
@@ -38,7 +37,7 @@ def hello_world(name=None):
 def stock_data(tag):
     db = Database()
     q = "select tag, detail, day, value from dev_variables inner join dev_values on id=variable_id\
-        where tag='{0}' order by day".format(
+        where tag='{0}' and value>0 order by day".format(
         tag)
     df = db.query_to_df(q)
     df.columns = ['tag', 'detail', 'day', 'value']
@@ -46,10 +45,20 @@ def stock_data(tag):
     return nw_df.to_csv()
 
 
-@app.route('/stock/<tag>')
 def stock_page(tag):
     return render_template('stock_page.html', tag=tag)
 
+
+def calendar_page(tag):
+    return "not implemented"
+
+
+@app.route('/<type>/<tag>')
+def variable_page(type, tag):
+    if type == "stock" :
+        return stock_page(tag)
+    elif type == "calendar":
+        return calendar_page(tag)
 
 
 @app.route('/test')

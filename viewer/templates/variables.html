@@ -6,7 +6,7 @@
       <ul>
       {% for var in vars %}
         {% if var[1] == type %}
-          <li><a href='{{url_for("stock_page",tag=var[0])}}' >{{var[0]}}</a></li>
+          <li><a href='{{url_for("variable_page",tag=var[0],type=var[1])}}' >{{var[0]}}</a></li>
         {% endif %}
       {% endfor %}
       </ul>

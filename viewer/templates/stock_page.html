@@ -4,8 +4,19 @@
 
 .line {
   fill: none;
-  stroke: steelblue;
   stroke-width: 2px;
+}
+.close {
+    stroke: purple;
+}
+.open {
+    stroke: blue;
+}
+.low {
+    stroke: red;
+}
+.high {
+    stroke: green;
 }
 
 </style>
@@ -18,7 +29,7 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
     height = 500 - margin.top - margin.bottom;
 
 // parse the date / time
-var parseTime = d3.timeParse("%d-%b-%y");
+var parseTime = d3.timeParse("%Y-%m-%d");
 
 // set the ranges
 var x = d3.scaleTime().range([0, width]);
@@ -26,8 +37,20 @@ var y = d3.scaleLinear().range([height, 0]);
 
 // define the line
 var closeline = d3.line()
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.close); });
+    .x(function(d) { return x(d.day); })
+    .y(function(d) { return y(d.Close); });
+
+var openline = d3.line()
+    .x(function(d) { return x(d.day); })
+    .y(function(d) { return y(d.Open); });
+
+var lowline = d3.line()
+    .x(function(d) { return x(d.day); })
+    .y(function(d) { return y(d.Low); });
+
+var highline = d3.line()
+    .x(function(d) { return x(d.day); })
+    .y(function(d) { return y(d.High); });
 
 // append the svg obgect to the body of the page
 // appends a 'group' element to 'svg'
@@ -43,20 +66,42 @@ var svg = d3.select("body").append("svg")
 
 d3.csv('{{url_for('stock_data', tag=tag)}}',function(data) {
 
+  //console.log(JSON.stringify(data))
+
   data.forEach(function(d) {
-      d.date = parseTime(d.day);
-      d.close = d.Close;
+      d.day = parseTime(d.day);
+      d.Close = +d.Close;
+      d.Open = +d.Open;
+      d.Low = +d.Low;
+      d.High = +d.High;
   });
 
+  //console.log(JSON.stringify(data))
+
   // Scale the range of the data
-  x.domain(d3.extent(data, function(d) { return d.date; }));
-  y.domain([0, d3.max(data, function(d) { return d.Close; })]);
+  x.domain(d3.extent(data, function(d) { return d.day; }));
+  y.domain([0, d3.max(data, function(d) { return d3.max([d.Close,d.Open,d.Low,d.High]); })]);
 
   // Add the valueline path.
   svg.append("path")
       .data([data])
-      .attr("class", "line")
+      .attr("class", "close line")
       .attr("d", closeline);
+
+  svg.append("path")
+      .data([data])
+      .attr("class", "open line")
+      .attr("d", openline);
+
+  svg.append("path")
+      .data([data])
+      .attr("class", "low line")
+      .attr("d", lowline);
+
+  svg.append("path")
+      .data([data])
+      .attr("class", "high line")
+      .attr("d", highline);
 
   // Add the X Axis
   svg.append("g")
@@ -67,29 +112,6 @@ d3.csv('{{url_for('stock_data', tag=tag)}}',function(data) {
   svg.append("g")
       .call(d3.axisLeft(y));
 
-  data.forEach(function(d) {
-      d.date = parseTime(d.date);
-      d.close = +d.close;
-  });
-
-  // Scale the range of the data
-  x.domain(d3.extent(data, function(d) { return d.date; }));
-  y.domain([0, d3.max(data, function(d) { return d.close; })]);
-
-  // Add the valueline path.
-  svg.append("path")
-      .data([data])
-      .attr("class", "line")
-      .attr("d", closeline);
-
-  // Add the X Axis
-  svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
-
-  // Add the Y Axis
-  svg.append("g")
-      .call(d3.axisLeft(y));
 })
   
 
